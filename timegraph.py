@@ -62,6 +62,11 @@ def plot2():
             #pylab.plot(dist,predict,'x',label='predict %s'%dti)
             pylab.plot(dist,diff,'x',label='%s:%s'%(ndays,alter1))
     
+def callivalue(precoacao,precoexercicio):
+    dist=precoacao-precoexercicio
+    absdist=numpy.abs(dist)
+    return (dist+absdist)/2
+
 def predictcalltvalue(precoacao,precoexercicio,daystoexp,alter1=0.0,alter2=0.0):
     dist=precoacao-precoexercicio
     absdist=numpy.abs(dist)
@@ -69,6 +74,9 @@ def predictcalltvalue(precoacao,precoexercicio,daystoexp,alter1=0.0,alter2=0.0):
     factor2=(0.0)*daystoexp/100.0+2.0+alter1
     predict=-0.05+factor1*numpy.exp((-1)*absdist/factor2)
     return predict
+
+def predictcallfvalue(precoacao,precoexercicio,daystoexp):
+    return predictcalltvalue(precoacao,precoexercicio,daystoexp)+callivalue(precoacao,precoexercicio)
     
 def plot3():
     for dist in [-2.0,-1.0,0.0,1.1,2.1]:
@@ -78,10 +86,32 @@ def plot3():
         predict=predictcalltvalue(precoacao,precoexercicio,days)
         pylab.plot(days,predict,'.',label='%s'%(dist))
 
-def plotcall(exercicio,daystoexp):
-    pass
+def plotcall(exercicio,daystoexp,max=30):
+    price=numpy.arange(0,max,0.005)
+    predict=predictcallfvalue(price,exercicio,daystoexp)
+    pylab.plot(price,predict,'-',label='%s:%s'%(exercicio,daystoexp))
 
-plot3()
+def plotratio(exercicio1,exercicio2,daystoexp,max=30):
+    price=numpy.arange(0,max,0.005)
+    predict=-predictcallfvalue(price,exercicio1,daystoexp)+2*predictcallfvalue(price,exercicio2,daystoexp)
+    pylab.plot(price,predict,'-',label='%s:%s:%s'%(exercicio1,exercicio2,daystoexp))
+
+def ploticall(exercicio,max=30):
+    price=numpy.arange(0,max,0.005)
+    predict=callivalue(price,exercicio)
+    pylab.plot(price,predict,'-',label='%s:0'%(exercicio))
+        
+
+v1=14
+v2=15
+plotcall(16,30,max=20)
+ploticall(v1,max=20)
+ploticall(v2,max=20)
+ploticall(16,max=20)
+plotratio(v1,v2,60,max=20)
+plotratio(v1,v2,30,max=20)
+plotratio(v1,v2,0,max=20)
+
 
 ax = pylab.plt.gca()
 #ax.set_yscale('log')
