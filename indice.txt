@@ -1,0 +1,66 @@
+﻿026 - 8 (or 10 or 25) percent rule - that if a price falls by x percent from a peak, its prudent to exit the trade
+033 - A retracement wont exceed a significant prior high or low.
+033 - Look for round numbers
+033 - The 30 percent rule - assume that a majority of traders will place stops to avoid losing more than x percent,such as 30 percent
+035 - Gann 50 percent retracement - W.D. Gann discovered that retracements in the securities he was trading at the time tended to occur at one-half of the original move from the low to the high. tb 75,25,12.5
+037 - fibonacci retracements - special attention to 38 percent and 62 percent (but also including 23.6 percent, 50 percent,and 100 percent of the high-low span)
+038 - Elliott Wave - all price movements have two segments: impulse waves and corrective waves.Each impulse wave has five parts: three waves that
+go in the trend direction, alternating with two that go in the opposite direction. each corrective wave has three parts: two that go against the main trend and one that goes with it.
+043 - OBV - add volume on days that the close is higher than the day before and subtract the volume on days that the price is lower than the day before
+046 - Chaikin figured that a more representative amount would be the percentage equivalent of the price that is above the midpoint of the day. You calculate a midpoint as the high of the day plus the low of the day divided by two.
+047 - Bull/Bear Ratio - Key reversals come when the majority of advisors (60 percent or more) are bullish or bearish
+048 - Breadth indicators measure the degree of participation by traders in the overall market represented by an index
+048 - advance/decline ratio, abbreviated A/D
+048 - Difference between issues making new highs and new lows
+048 - put/call ratio
+049 - vix
+050 - Sell in May and go away
+050 - nearly all the gains in the S&P 500 are made between November 1 and April 30
+050 - January Barometer: When the S&P 500 is up in January, itll close the year higher than it opened. Since 1950, this rule has an accuracy reading of 90 percent.
+051 - Presidents Third Year: Since 1939, the third year of a presidential term is always an up year for the Dow
+051 - Presidential Election Cycle: Wars, recessions, and bear markets tend
+to start in the first two years, while prosperity and bull markets tend to
+happen in the second two years.
+067 - historic levels
+083 - Maximum adverse excursion - worst-case loss that may occur during the course of your trade. Using this method, you calculate the biggest change in the highlow range over a fixed period
+117 - closes at the high
+117 - inside day
+118 - outside day
+119 - close at the open
+120 - spike
+122 - gap
+124 - A common gap tends to have low volume on the gap day
+124 - Breakaway gap - high volume
+126 - Exhaustion gap - volume is usually low
+126 - island reversal
+130 - Range expansion - usually suggests a continuation pattern. rising volume usually accompanies range expansion and is an excellent indication of an accelerating trend
+130 - Range contraction - suggests that a trend reversal may be coming soon. Falling volume often accompanies range contraction. if you see high volume and a lower close in a contracting range, you probably want to exit the security
+131 - average trading range
+133 - average true range
+140 - doji - Its a transitional bar
+144 - one relatively long bar may be telling you that support or resistance has been reached
+146 - hammer, hanging man
+146 - harami - change in sentiment is impending
+147 - engulfing
+147 - shooting star
+149 - three white soldiers
+149 - three black crows
+157 - triangle - The average decline was 19 percent, and the average decline lasted 74 days. The average rise was 41 percent and lasted an average of 163 days. For triangles, low volume often precedes the breakout
+159 - dead-cat bounce - The pattern fails to deliver an additional decline only 10 percent of the time, making the success rate 90 percent.
+160 - double bottom - If you wait for the price to break above the confirmation line, the pattern delivers a profit an astonishing 97 percent of the time — and the average gain is 40 percent.
+162 - double top - A true double top is usually accompanied by falling volume as the second top is being formed. When the condition is met, however, the pattern delivers a down move 83 percent of the time
+163 - head and shoulders - when the price surpasses the pattern’s confirmation line, it delivers the expected down move a whopping 93 percent of the time. A confirmed head-and-shoulders delivers an average decline of 23 percent from the neckline, and the most often-seen decline is 15 percent. The average length of the pattern is 62 days. volume falls after the head. Volume on the breakout day and the next few days after the breakout day, however, tends to be very high.
+172 - support line
+176 - Congestion and consolidation describe the same thing — trendless prices trading in a range. Often the range is defined by a previous high or low. Consolidations often precede and follow a breakout.
+178 - linear regression
+190 - key reversal bar
+191 - breakouts - You can verify that the breakout isn’t random by seeing an equivalent change in volume: Increase in volume often accompanies the end of a strong trend; Decrease in volume may foreshadow a breakout with accompanying higher volume.
+192 - a breakout that occurs in the course of an orderly (low volatility) trend is more meaningful than a breakout that occurs in a disorderly (high volatility) trend
+194 - blowout - an upside breakout in an uptrend is often a warning of an impending downside breakout, counterintuitive as that seems at first.
+198 - raff regression channel
+200 - pivot point
+205 - Moving averages are trend-following.
+205 - Simple Moving Average
+209 - crossover filters - time, extent, volume, extreme sentiment.
+209 - moving average level rule
+

@@ -107,16 +107,16 @@ def linab(x1,y1,x2,y2):
 
 def plot2():
     #ndays=[0,5,10,15,30,60,90,120]
-    #ndays=[0,30,60,90,120,300]
-    ndays=[0,300]
+    ndays=[0,30,90,300]
+    #ndays=[0,300]
     #for alter1,alter2 in [(-alt,0),(0,0),(alt,0)]:
     for alter1,alter2 in [(0,0)]:
         for nmin,nmax in zip(ndays[:-1],ndays[1:]):
-            for distmed in np.arange(-6,0.1,1):
+            for distmed in np.arange(-6,0.1,6):
                 qp=quotes[[i for i,x in enumerate(quotes.papel) if x in papeis]]
                 qp=filterndays(qp,nmin,nmax)
-                qp=filterdistneg(qp)
-                qp=filterdist(qp,distmed,0.2)
+                #qp=filterdistneg(qp)
+                qp=filterdist(qp,distmed,6)
                 ### end of masks
                 daystoexp=np.array([x.days for x in qp.vencimento-qp.date])
                 precoacao=np.array([petr4[petr4.date==xdate]['close'][0] for xdate in qp.date])
@@ -127,21 +127,27 @@ def plot2():
                 diff=predict-tvalue
                 factor1=daystoexp**0.64/np.exp(2.8)
                 factor2=0.65*daystoexp/100.0
-                #pylab.plot(dist,tvalue/factor1,'+',label='%s'%nmax)
-                #pylab.plot(dist,predict,'x',label='%s'%nmax)
+                pylab.plot(dist,tvalue,'+',label='%s'%nmax)
+                pylab.plot(dist,predict,'x',label='%s'%nmax)
                 #pylab.plot(dist,diff,'x',label='%s'%nmax)
                 #pylab.plot(daystoexp,tvalue,'x',label='%s:%s'%(nmax,distmed))
-                pylab.plot(np.log(daystoexp),np.log(tvalue),'x',label='%s:%s'%(nmax,distmed))
+                #pylab.plot(daystoexp,predict,'x',label='%s:%s'%(nmax,distmed))
+                #pylab.plot(np.log(daystoexp),np.log(tvalue),'x',label='%s:%s'%(nmax,distmed))
+                #pylab.plot(np.log(daystoexp),np.log(predict),'x',label='%s:%s'%(nmax,distmed))
 
 def predictcalltvalue(precoacao,precoexercicio,daystoexp,alter1=0.0,alter2=0.0):
     dist=precoacao-precoexercicio
     absdist=np.abs(dist)
+    b=-2.54-(absdist)*2.14
+    a=(b-0.885)/(-5.9)
     #factor1=(2.4)*daystoexp/100.0
-    factor1=daystoexp**0.64/np.exp(2.8)
-    factor2=0.27*daystoexp/100.0
-    predict=factor1*np.exp((-1.0)*factor2*np.abs(dist))
+    #factor1=daystoexp**0.64/np.exp(2.8)
+    #factor2=0.27*daystoexp/100.0
+    #predict=factor1*np.exp((-1.0)*factor2*np.abs(dist))
+    predict=np.exp(b)*(daystoexp**a)
     return predict
 
+ 
 x=np.arange(3,6,0.1)
 d=120
 factor1=d**0.64/np.exp(2.8)
@@ -157,17 +163,25 @@ def pf(x1,y1,x2,y2,xa=[],xb=[]):
     pylab.plot(x,a*x+b,'-',label='plot %s'%d)
     return xa,xb
 
-x1,y1=(5.9,0.885)
-pf(x1,y1,3,-1.7)
-pf(x1,y1,3,-0.8)
-pf(x1,y1,2.65,-3.2)
-pf(x1,y1,3.5,-3.2)
-xa,xb=pf(x1,y1,3.2,-4.6)
-pylab.plot(xa,xb,'*-')
-print linab(xa[0],xb[0],xa[1],xb[1])
+def f1():
+    x1,y1=(5.9,0.885)
+    pf(x1,y1,3,-1.7)
+    pf(x1,y1,3,-0.8)
+    pf(x1,y1,2.65,-3.2)
+    pf(x1,y1,3.5,-3.2)
+    xa,xb=pf(x1,y1,3.2,-4.6)
+    pylab.plot(xa,xb,'*-')
+    print linab(xa[0],xb[0],xa[1],xb[1])
 
+def f2():
+  for dist in np.arange(-6,0.1,1):
+    days=np.arange(1,300,1)
+    tval=predictcalltvalue(10-dist,10,days)
+    pylab.plot(np.log(days),np.log(tval),'.')
 
-plot2()
+#plot2()
+plotcall(18,1)
+
 
 ax = pylab.plt.gca()
 #ax.set_xscale('log')
