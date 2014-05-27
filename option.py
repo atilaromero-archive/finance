@@ -28,16 +28,12 @@ class Option:
 class Call(Option):
     #      [ , x, ln(d), xln(d)]
     params=[-2.538, -1.9264, 0.60037, 0.3063]
-    #params=[0.9083, -1.3003500000000001, -0.36683, 0.47369]
-    #params=[1.1303, -1.41145, -0.36673, 0.47369]
-    #params=[-0.06328, -1.48925, -0.07721,0.5]
-    #params=[-1.498, -1.7864, 0.18037, 0.5563]
-    params=[0,0,0,0]
-    params=[-0.5800000000000003, 0.45000000000000007, -1.4000000000000001, 0.21000000000000008]
+    params=[-2.7377693486652737, -1.1793911104740262, 0.63531339107274065, 0.16006923396045747]
+    params=[-2.9498013116793156, -1.3902570901084326, 0.69300558122785316, 0.18147226270992628]
     def __init__(self,precoexercicio,precoacao,daystoexp):
         dist=precoacao-precoexercicio
         absdist=np.abs(dist)
-        p=Call.params
+        p=list(Call.params)
         x=absdist
         lnd=np.log(daystoexp)
         self.prices=precoacao
@@ -48,10 +44,14 @@ class Call(Option):
 class Put(Option):
     # [ , x, ln(d), xln(d)]
     params=[-2.41259, -1.86588, 0.50489, 0.27775]
+    params=[-2.3600902132900243, -1.8132129781771538, 0.49474942606743461, 0.2648205011754966]
+    params=[-2.185689957054469, -1.4892686558017223, 0.44642311025741899, 0.19359798564991582]#close
+    params=[-1.3023556772627178, -1.1653724402371433, 0.30425680666021426, 0.12490090657926957]#high
+    params=[-1.0041455419858909, -2.0028617354027749, 0.21863266572499931, 0.31531627424611591]
     def __init__(self,precoexercicio,precoacao,daystoexp):
         dist=precoexercicio-precoacao
         absdist=np.abs(dist)
-        p=Put.params
+        p=list(Put.params)
         x=absdist
         lnd=np.log(daystoexp)
         self.prices=precoacao

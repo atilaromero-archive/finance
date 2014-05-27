@@ -29,11 +29,11 @@ def plot1():
         qp=quotes[quotes.papel==p]
         daystoexp=[x.days for x in qp.vencimento-qp.date]
         _petr=petr4[[i for i,d in enumerate(petr4.date) if d in qp.date]]
-        dist=_petr.close-qp.exercicio
+        dist=_petr.high-qp.exercicio
         absdist=[abs(x) for x in dist]
         ivalue=[x>0 and x or 0 for x in dist]
-        tvalue=qp.close-ivalue
-        #pylab.plot_date(qp.date,qp.close,'.',label='close %s'%p)
+        tvalue=qp.high-ivalue
+        #pylab.plot_date(qp.date,qp.high,'.',label='high %s'%p)
         #pylab.plot_date(qp.date,ivalue,'.',label='ivalue %s'%p)
         pylab.plot(dist,tvalue,'.',label='tvalue %s'%p)
 
@@ -78,7 +78,7 @@ def testratio():
     plotratio(v1,v2,45,max=20)
     plotratio(v1,v2,0,max=20)
 
-papeis=['PETR%s%s'%(y,x) for y in ['A','B','C','D','E'] for x in [12,13,14,15,16,18,19]]
+papeis=['PETR%s%s'%(y,x) for y in ['M','N','O','P','Q'] for x in [12,13,14,15,16,18,19]]
 alt=0.5
 def filterndays(qp,ndaysmin,ndaysmax):
     daystoexp=np.array([x.days for x in qp.vencimento-qp.date])
@@ -90,13 +90,13 @@ def filterndays(qp,ndaysmin,ndaysmax):
     return qp
 
 def filterdist(qp,med,var):
-    precoacao=np.array([petr4[petr4.date==xdate]['close'][0] for xdate in qp.date])
+    precoacao=np.array([petr4[petr4.date==xdate]['high'][0] for xdate in qp.date])
     dist=precoacao-qp.exercicio
     qp=qp[np.abs(dist-med)<var]
     return qp
 
 def filterdistneg(qp):
-    precoacao=np.array([petr4[petr4.date==xdate]['close'][0] for xdate in qp.date])
+    precoacao=np.array([petr4[petr4.date==xdate]['high'][0] for xdate in qp.date])
     dist=precoacao-qp.exercicio
     qp=qp[dist<=0]
     return qp
@@ -114,15 +114,15 @@ def plot2():
         for distmed in np.arange(-6,0.1,6):
             qp=quotes[[i for i,x in enumerate(quotes.papel) if x in papeis]]
             qp=filterndays(qp,nmin,nmax)
-            qp=filterdistneg(qp)
+            #qp=filterdistneg(qp)
             qp=filterdist(qp,distmed,6)
             ### end of masks
             daystoexp=np.array([x.days for x in qp.vencimento-qp.date])
-            precoacao=np.array([petr4[petr4.date==xdate]['close'][0] for xdate in qp.date])
-            dist=precoacao-qp.exercicio
+            precoacao=np.array([petr4[petr4.date==xdate]['high'][0] for xdate in qp.date])
+            dist=-(precoacao-qp.exercicio)
             ivalue=[x>0 and x or 0 for x in dist]
-            tvalue=qp.close-ivalue
-            opt=option.Call(qp.exercicio,precoacao,daystoexp)
+            tvalue=qp.high-ivalue
+            opt=option.Put(qp.exercicio,precoacao,daystoexp)
             diff=opt.tvalue-tvalue
             #pylab.plot(dist,tvalue,'+',label='%s'%nmax)
             #pylab.plot(dist,opt.tvalue,'x',label='%s'%nmax)
