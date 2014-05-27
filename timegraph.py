@@ -3,6 +3,7 @@ import bmfutils
 import datetime
 import pylab
 import numpy as np
+import option
 
 #quotes=bmfutils.readfile('COTAHIST_A2013.TXT')
 quotes=bmfutils.readfile('test.data')
@@ -109,31 +110,27 @@ def plot2():
     #ndays=[0,5,10,15,30,60,90,120]
     ndays=[0,30,90,300]
     #ndays=[0,300]
-    #for alter1,alter2 in [(-alt,0),(0,0),(alt,0)]:
-    for alter1,alter2 in [(0,0)]:
-        for nmin,nmax in zip(ndays[:-1],ndays[1:]):
-            for distmed in np.arange(-6,0.1,6):
-                qp=quotes[[i for i,x in enumerate(quotes.papel) if x in papeis]]
-                qp=filterndays(qp,nmin,nmax)
-                #qp=filterdistneg(qp)
-                qp=filterdist(qp,distmed,6)
-                ### end of masks
-                daystoexp=np.array([x.days for x in qp.vencimento-qp.date])
-                precoacao=np.array([petr4[petr4.date==xdate]['close'][0] for xdate in qp.date])
-                dist=precoacao-qp.exercicio
-                ivalue=[x>0 and x or 0 for x in dist]
-                tvalue=qp.close-ivalue
-                predict=predictcalltvalue(precoacao,qp.exercicio,daystoexp,alter1,alter2)
-                diff=predict-tvalue
-                factor1=daystoexp**0.64/np.exp(2.8)
-                factor2=0.65*daystoexp/100.0
-                pylab.plot(dist,tvalue,'+',label='%s'%nmax)
-                pylab.plot(dist,predict,'x',label='%s'%nmax)
-                #pylab.plot(dist,diff,'x',label='%s'%nmax)
-                #pylab.plot(daystoexp,tvalue,'x',label='%s:%s'%(nmax,distmed))
-                #pylab.plot(daystoexp,predict,'x',label='%s:%s'%(nmax,distmed))
-                #pylab.plot(np.log(daystoexp),np.log(tvalue),'x',label='%s:%s'%(nmax,distmed))
-                #pylab.plot(np.log(daystoexp),np.log(predict),'x',label='%s:%s'%(nmax,distmed))
+    for nmin,nmax in zip(ndays[:-1],ndays[1:]):
+        for distmed in np.arange(-6,0.1,6):
+            qp=quotes[[i for i,x in enumerate(quotes.papel) if x in papeis]]
+            qp=filterndays(qp,nmin,nmax)
+            qp=filterdistneg(qp)
+            qp=filterdist(qp,distmed,6)
+            ### end of masks
+            daystoexp=np.array([x.days for x in qp.vencimento-qp.date])
+            precoacao=np.array([petr4[petr4.date==xdate]['close'][0] for xdate in qp.date])
+            dist=precoacao-qp.exercicio
+            ivalue=[x>0 and x or 0 for x in dist]
+            tvalue=qp.close-ivalue
+            opt=option.Call(qp.exercicio,precoacao,daystoexp)
+            diff=opt.tvalue-tvalue
+            #pylab.plot(dist,tvalue,'+',label='%s'%nmax)
+            #pylab.plot(dist,opt.tvalue,'x',label='%s'%nmax)
+            pylab.plot(dist,diff,'x',label='%s'%nmax)
+            #pylab.plot(daystoexp,tvalue,'x',label='%s:%s'%(nmax,distmed))
+            #pylab.plot(daystoexp,predict,'x',label='%s:%s'%(nmax,distmed))
+            #pylab.plot(np.log(daystoexp),np.log(tvalue),'x',label='%s:%s'%(nmax,distmed))
+            #pylab.plot(np.log(daystoexp),np.log(predict),'x',label='%s:%s'%(nmax,distmed))
 
 def predictcalltvalue(precoacao,precoexercicio,daystoexp,alter1=0.0,alter2=0.0):
     dist=precoacao-precoexercicio
@@ -148,13 +145,6 @@ def predictcalltvalue(precoacao,precoexercicio,daystoexp,alter1=0.0,alter2=0.0):
     return predict
 
  
-x=np.arange(3,6,0.1)
-d=120
-factor1=d**0.64/np.exp(2.8)
-factor2=1.5*d/100.0
-#pylab.plot(x,factor1*np.exp((-1.0)*factor2*np.abs(x)),'.',label='plot %s'%d)
-#pylab.plot(x,0.64*x-2.8,'.',label='plot %s'%d)
-#pylab .plot(x,x**0.64/np.exp(2.8),'.',label='plot %s'%d)
 def pf(x1,y1,x2,y2,xa=[],xb=[]):
     a,b=linab(x1,y1,x2,y2)
     xa+=[a]
@@ -179,8 +169,7 @@ def f2():
     tval=predictcalltvalue(10-dist,10,days)
     pylab.plot(np.log(days),np.log(tval),'.')
 
-#plot2()
-plotcall(18,1)
+plot2()
 
 
 ax = pylab.plt.gca()

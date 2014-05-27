@@ -30,6 +30,10 @@ class Call(Option):
     params=[-2.538, -1.9264, 0.60037, 0.3063]
     #params=[0.9083, -1.3003500000000001, -0.36683, 0.47369]
     #params=[1.1303, -1.41145, -0.36673, 0.47369]
+    #params=[-0.06328, -1.48925, -0.07721,0.5]
+    #params=[-1.498, -1.7864, 0.18037, 0.5563]
+    params=[0,0,0,0]
+    params=[-0.5800000000000003, 0.45000000000000007, -1.4000000000000001, 0.21000000000000008]
     def __init__(self,precoexercicio,precoacao,daystoexp):
         dist=precoacao-precoexercicio
         absdist=np.abs(dist)
@@ -63,18 +67,15 @@ def plotspread(exercicio1,exercicio2,daystoexp,min=12,max=20):
     pylab.plot(price,opt.value,'-',label='%s:%s:%s'%(exercicio1,exercicio2,daystoexp))
 
 if __name__=="__main__":
-    price=np.arange(12,20,0.005)
+    price=np.arange(16,19,0.005)
     ex=16
-    d=30
-    a=Put(ex,price,d)
-    b=Call(ex,price,d)
+    d=21
+    a=Put(16.66,price,d)
+    b=Call(19.16,price,d)
     c=a+b
-    a.plot('-',label='%s:%s'%(ex,d))
-    b.plot('-',label='%s:%s'%(ex,d))
-    c.plot('-',label='%s:%s'%(ex,d))
-    (Put(15.5,price,d)+Call(16.5,price,d)).plot('-',label='%s:%s'%(ex,d))
-    (Put(15,price,d)+Call(17,price,d)).plot('-',label='%s:%s'%(ex,d))
-    (Put(14,price,d)+Call(18,price,d)).plot('-',label='%s:%s'%(ex,d))
+    a.plot('-')
+    b.plot('-')
+    c.plot('-')
 
     ax = pylab.plt.gca()
     #ax.set_xscale('log')
