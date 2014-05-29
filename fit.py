@@ -36,7 +36,7 @@ def _grade2(function,params,x,y):
     ndist=(nres-ny)**2
     return np.sum(-ndist)
     
-_grade=_grade1
+_grade=_grade5
 
 def _try1(function,params,x,y,s):
     grades=[0]*len(params)
@@ -50,37 +50,39 @@ def _try1(function,params,x,y,s):
 
 def _try2(function,params,x,y,s):
     grades=[[_grade(function,params[:],x,y),params]]
-    for i in range(10000):
-        tp=params[:]
+    for i in range(100):
+        tp=list(params)[:]
         tp+=((np.random.random(len(tp))-0.5)*s)
-        grades.append([_grade(function,tp,x,y),tp.copy()])
+        try:
+            grades.append([_grade(function,tp,x,y),tp.copy()])
+        except:
+            pass
     maxg=max(grades,key=(lambda x : x[0]))
-    print 'maxg',maxg
+    #print 'maxg',maxg
     assert _grade(function,maxg[1],x,y)==maxg[0]
     return maxg
 
 _try=_try2
 
-def fit(function,parameters,x,y,step=0.1):
+verbose=False
+def fit(function,parameters,x,y,minstep=0.001):
     """y=function(x,params)
     """
-    params=parameters[:]
-    ret= list(_try2(function,params,x,y,step)[1])
-    print '-=-=-=-',_grade3(function,params,x,y)
-    return ret
+    params=list(parameters)[:]
     present=(_grade(function,params,x,y),params)
+    step=1
     while True:
-        tries=[present]
-        params=present[1]
-        tries.append(_try2(function,params,x,y,step))
-        maxg=max([a[0] for a in tries])
-        if maxg<=present[0]:
-            return present[1]
+        if verbose:
+            print step,present[0]
+        params=list(present[1])[:]
+        new=(_try2(function,params,x,y,step))
+        if new[0]>present[0]:
+            step*=10.0
         else:
-            for j in range(len(tries)):
-                if maxg==tries[j][0]:
-                    present=tries[j]
-
+            if step<minstep:
+                return present[1]
+            step/=10.0
+        present=new
 
 def _test():
     def f(x,p):
@@ -88,3 +90,5 @@ def _test():
     x=[1,2,3]
     y=[10,20,30]
     print 'result:',fit(f,[0,],x,y,0.01)
+if __name__=='__main__':
+    _test()

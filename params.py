@@ -66,14 +66,11 @@ def paramsPut():
 
 def paramsOpt(filtr,params,func):
     qp=quotes[[i for i,x in enumerate(quotes.papel) if x in papeis]]
-    qp=filtr(qp)
+    #qp=filtr(qp)
     daystoexp=np.array([x.days for x in qp.vencimento-qp.date])
     precoacao=np.array([petr4[petr4.date==xdate]['high'][0] for xdate in qp.date])
     p=params
-    for step in list(10.0**(-np.arange(6))):
-        print 'step',step
-        for asd in range(10):
-            p=fit.fit(func,p,[qp.exercicio,precoacao,daystoexp],qp.high,step=step)
+    p=fit.fit(func,p,[qp.exercicio,precoacao,daystoexp],qp.high)
     return p
 
 petr4=quotes[quotes.papel=='PETR4']

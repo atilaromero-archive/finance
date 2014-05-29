@@ -2,6 +2,7 @@
 import datetime
 import pylab
 import numpy as np
+import blackscholes
 
 class Option:
     def __add__(self,y):
@@ -44,10 +45,9 @@ class Call(Option):
 class Put(Option):
     # [ , x, ln(d), xln(d)]
     params=[-2.41259, -1.86588, 0.50489, 0.27775]
-    params=[-2.3600902132900243, -1.8132129781771538, 0.49474942606743461, 0.2648205011754966]
-    params=[-2.185689957054469, -1.4892686558017223, 0.44642311025741899, 0.19359798564991582]#close
-    params=[-1.3023556772627178, -1.1653724402371433, 0.30425680666021426, 0.12490090657926957]#high
-    params=[-1.0041455419858909, -2.0028617354027749, 0.21863266572499931, 0.31531627424611591]
+    #params=[-1.0082437265550315, -1.974309334504702, 0.21972509185406594, 0.30774630078398801]
+    #params=[-1.2178433683994145, -1.217226233968439, 0.28342167534088164, 0.13770773289869692]
+    params=[-1.5586196264866983, -0.078601464441779095, 0.3802300107964442, -0.10456093887543065]
     def __init__(self,precoexercicio,precoacao,daystoexp):
         dist=precoexercicio-precoacao
         absdist=np.abs(dist)
@@ -67,15 +67,19 @@ def plotspread(exercicio1,exercicio2,daystoexp,min=12,max=20):
     pylab.plot(price,opt.value,'-',label='%s:%s:%s'%(exercicio1,exercicio2,daystoexp))
 
 if __name__=="__main__":
-    price=np.arange(16,19,0.005)
+    price=np.arange(16,20,0.005)
     ex=16
-    d=21
+    d=(datetime.date(2014,06,16)-datetime.date.today()).days
     a=Put(16.66,price,d)
     b=Call(19.16,price,d)
-    c=a+b
     a.plot('-')
     b.plot('-')
-    c.plot('-')
+    for x in [-1.5,-1,-0.5,0,0.5,1,1.5]:
+        a=Put(18.16-x,price,d)
+        b=Call(18.16+x,price,d)
+        c=a+b
+        c.value=c.value/min(c.value)
+        c.plot('-',label=x)
 
     ax = pylab.plt.gca()
     #ax.set_xscale('log')

@@ -24,62 +24,8 @@ papeis=['PETRE14' ,
 
 petr4=quotes[quotes.papel=='PETR4']
 
-def plot1():
-    for p in papeis[:4]:
-        qp=quotes[quotes.papel==p]
-        daystoexp=[x.days for x in qp.vencimento-qp.date]
-        _petr=petr4[[i for i,d in enumerate(petr4.date) if d in qp.date]]
-        dist=_petr.high-qp.exercicio
-        absdist=[abs(x) for x in dist]
-        ivalue=[x>0 and x or 0 for x in dist]
-        tvalue=qp.high-ivalue
-        #pylab.plot_date(qp.date,qp.high,'.',label='high %s'%p)
-        #pylab.plot_date(qp.date,ivalue,'.',label='ivalue %s'%p)
-        pylab.plot(dist,tvalue,'.',label='tvalue %s'%p)
-
-def callivalue(precoacao,precoexercicio):
-    dist=precoacao-precoexercicio
-    absdist=np.abs(dist)
-    return (dist+absdist)/2
-
-def predictcallfvalue(precoacao,precoexercicio,daystoexp):
-    return predictcalltvalue(precoacao,precoexercicio,daystoexp)+callivalue(precoacao,precoexercicio)
-    
-def plot3():
-    for dist in [-2.0,-1.0,0.0,1.1,2.1]:
-        days = np.arange(120,0,-1)
-        precoacao=np.array([15.0,]*len(days))
-        precoexercicio=np.array([15.0+dist,]*len(days))
-        predict=predictcalltvalue(precoacao,precoexercicio,days)
-        pylab.plot(days,predict,'.',label='%s'%(dist))
-
-def plotcall(exercicio,daystoexp,max=30):
-    price=np.arange(0,max,0.005)
-    predict=predictcallfvalue(price,exercicio,daystoexp)
-    pylab.plot(price,predict,'-',label='%s:%s'%(exercicio,daystoexp))
-
-def plotratio(exercicio1,exercicio2,daystoexp,max=30):
-    price=np.arange(0,max,0.005)
-    predict=-predictcallfvalue(price,exercicio1,daystoexp)+3*predictcallfvalue(price,exercicio2,daystoexp)
-    pylab.plot(price,predict,'-',label='%s:%s:%s'%(exercicio1,exercicio2,daystoexp))
-
-def ploticall(exercicio,max=30):
-    price=np.arange(0,max,0.005)
-    predict=callivalue(price,exercicio)
-    pylab.plot(price,predict,'-',label='%s:0'%(exercicio))
-        
-def testratio():
-    v1=12
-    v2=14
-    plotcall(v1,30,max=20)
-    ploticall(v1,max=20)
-    ploticall(v2,max=20)
-    plotratio(v1,v2,90,max=20)
-    plotratio(v1,v2,45,max=20)
-    plotratio(v1,v2,0,max=20)
-
 papeis=['PETR%s%s'%(y,x) for y in ['M','N','O','P','Q'] for x in [12,13,14,15,16,18,19]]
-alt=0.5
+
 def filterndays(qp,ndaysmin,ndaysmax):
     daystoexp=np.array([x.days for x in qp.vencimento-qp.date])
     mask=daystoexp<ndaysmax
@@ -126,7 +72,8 @@ def plot2():
             diff=opt.tvalue-tvalue
             #pylab.plot(dist,tvalue,'+',label='%s'%nmax)
             #pylab.plot(dist,opt.tvalue,'x',label='%s'%nmax)
-            pylab.plot(dist,diff,'x',label='%s'%nmax)
+            #pylab.plot(qp.exercicio,diff,'x',label='%s'%nmax)
+            pylab.plot_date(qp.date,diff,'x',label='%s'%nmax)
             #pylab.plot(daystoexp,tvalue,'x',label='%s:%s'%(nmax,distmed))
             #pylab.plot(daystoexp,predict,'x',label='%s:%s'%(nmax,distmed))
             #pylab.plot(np.log(daystoexp),np.log(tvalue),'x',label='%s:%s'%(nmax,distmed))

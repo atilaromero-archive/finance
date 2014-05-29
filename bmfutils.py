@@ -19,7 +19,7 @@ format=[('tipo',2,(str,8),convstrip),
         ('date',8,date,convdata),
         ('bdi',2,(str,8),convstrip),
         ('papel',12,(str,8),convstrip),
-        ('merc',3,(str,8),convstrip),
+        ('merc',3,(str,8),convstrip), #010=acao, 070=call, 080=put
         ('nomeres',12,(str,8),convstrip),
         ('especi',10,(str,8),convstrip),
         ('prazo',3,(str,8),convstrip),
