@@ -17,8 +17,8 @@ def CND(X):
             w = 1.0 - w
     return w
 
-# Black Sholes Function
-def BlackSholes(CallPutFlag,S,X,T,r,v):
+# Black Scholes Function
+def BlackScholes(CallPutFlag,S,X,T,r,v):
     """CallPutFlag:'c' or 'p'
 S: Stock price
 X: Strike price
@@ -38,9 +38,9 @@ def _test():
 2.13337186193
 5.84628562687
 got:"""
-    print BlackSholes('c',60.0,65.0,0.25,0.08,0.3)
-    print BlackSholes('p',60.0,65.0,0.25,0.08,0.3)
-    print BlackSholes('c',np.array([60.0]),np.array([65.0]),0.25,0.08,0.3)
-    print BlackSholes('p',np.array([60.0]),np.array([65.0]),0.25,0.08,0.3)
+    print BlackScholes('c',60.0,65.0,0.25,0.08,0.3)
+    print BlackScholes('p',60.0,65.0,0.25,0.08,0.3)
+    print BlackScholes('c',np.array([60.0]),np.array([65.0]),0.25,0.08,0.3)
+    print BlackScholes('p',np.array([60.0]),np.array([65.0]),0.25,0.08,0.3)
 if __name__=='__main__':
     _test()
