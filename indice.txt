@@ -63,4 +63,9 @@ happen in the second two years.
 205 - Simple Moving Average
 209 - crossover filters - time, extent, volume, extreme sentiment.
 209 - moving average level rule
-
+213 - One moving average really does stand out — the 20-day
+214 - golden cross - 50-day moving average crossed its 200-day moving average
+214 - death cross - 50-day moving average crossing below the 200-day
+215 - WMA - weighted moving average
+215 - EMA - exponential moving average
+215 - AMA - adaptive moving average (KAMA, JAMA)
