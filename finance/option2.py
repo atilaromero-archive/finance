@@ -5,6 +5,11 @@ import numpy as np
 import blackscholes as bs
 import collections
 
+def _preparedate(date):
+    if isinstance(date, tuple) or isinstance(date, list):
+        date = datetime.date(*date)
+    return date
+
 class Money(object):
     @staticmethod
     def value(*args, **kwargs):
@@ -13,8 +18,7 @@ class Money(object):
 class Option(object):
     def __init__(self, strikeprice, expirationdate, optype):
         self.strikeprice = strikeprice
-        if not isinstance(expirationdate, datetime.date):
-            expirationdate = datetime.date(*expirationdate)
+        expirationdate = _preparedate(expirationdate)
         self.expirationdate = expirationdate
         self.optype = optype
 
@@ -25,7 +29,8 @@ class Option(object):
         if daystoexp < 0:  
             return 0
             #daystoexp = 0 
-        return bs.BlackScholes(self.optype,stockprice,self.strikeprice,daystoexp,rate,volatility)
+        result = bs.BlackScholes(self.optype,stockprice,self.strikeprice,daystoexp,rate,volatility)
+        return result
 
 class Call(Option):
     def __init__(self, strikeprice, expirationdate):
@@ -43,14 +48,10 @@ class Balance(collections.defaultdict):
         self.default_factory = lambda : 0
 
     def append(self, legs, date):
+        date = _preparedate(date)
         for leg in legs:
-            self[leg.asset] += leg.quantity
+            self[leg.asset] = round(self[leg.asset] + leg.quantity, 2)
         self.date = date
-        if hasattr(self,'pricerange'):
-            self.plot(self.pricerange)
-
-    def autoplot(self, pricerange):
-        self.pricerange = pricerange
 
     def snapshot(self):
         result =  Balance(dict([(k,v) for k, v in self.iteritems() if v != 0]))
@@ -70,19 +71,34 @@ class History:
         self.balancehistory = []
 
     def _updatebalance(self, legs, date):
+        date = _preparedate(date)
         self.tradehistory.append((legs, date))
         self.balance.append(legs, date)
         self.balancehistory.append(self.balance.snapshot())
 
     def cash(self, quantity, date=None):
+        date = _preparedate(date)
         self._updatebalance([Leg(Money, quantity)], date)
 
+    
+    @staticmethod
+    def commission(price, quantity):
+        result = 0
+        for percent in [0.04, 0.03, 0.07]:
+            result += np.trunc(percent * price * quantity)
+        result += np.trunc(7.5 * 105.0)
+        return float(result) / 100.0
+        
     def trade(self, option, quantity, price=None, date=None, stockprice=None):
+        date = _preparedate(date)
         if price == None:
             price = option.value(stockprice, date)
-        commission = 0 # TODO
+        commission = self.commission(price, quantity)
         self._updatebalance([Leg(option, quantity), 
-                             Leg(Money, -(price*quantity)), 
+                             Leg(Money, -round(price*quantity, 2)), 
                              Leg(Money, -commission)], date)
 
-        
+    def plotAll(self, pricerange):
+        for b in self.balancehistory:
+            b.plot(np.arange(17,25,0.05))
+        pylab.show()
