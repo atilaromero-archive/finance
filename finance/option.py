@@ -3,106 +3,102 @@ import datetime
 import pylab
 import numpy as np
 import blackscholes as bs
+import collections
 
-class Option:
-    rate=0.00018
-    volatility=0.015
-    def __add__(self,y):
-        ret=Option()
-        ret.value= self.value+y.value
-        assert np.all(self.prices==y.prices)
-        ret.prices=self.prices
-        return ret
-    
-    def __sub__(self,y):
-        ret=Option()
-        ret.value= self.value-y.value
-        assert np.all(self.prices==y.prices)
-        ret.prices=self.prices
-        return ret
+def _preparedate(date):
+    if isinstance(date, tuple) or isinstance(date, list):
+        date = datetime.date(*date)
+    return date
 
-    def plot(self,*args,**kwargs):
-        pylab.plot(self.prices,self.value,*args,**kwargs)   
+class Money(object):
+    @staticmethod
+    def value(*args, **kwargs):
+        return 1
 
-    def plotDelta(self,*args,**kwargs):
-        dx=self.prices[1:]-self.prices[:-1]
-        dy=self.value[1:] - self.value[:-1]
-        x=self.prices[:-1]
-        y=self.value[:-1]
-        pylab.plot(x,(dy/dx)/y,*args,**kwargs)   
+class Option(object):
+    def __init__(self, strikeprice, expirationdate, optype):
+        self.strikeprice = strikeprice
+        expirationdate = _preparedate(expirationdate)
+        self.expirationdate = expirationdate
+        self.optype = optype
+
+    def value(self, stockprice, date=None, volatility=0.020, rate=0.00018):
+        if date == None:
+            date = datetime.date.today()
+        daystoexp = (self.expirationdate - date).days
+        if daystoexp < 0:  
+            return 0
+            #daystoexp = 0 
+        result = bs.BlackScholes(self.optype,stockprice,self.strikeprice,daystoexp,rate,volatility)
+        return result
 
 class Call(Option):
-    def __init__(self,precoexercicio,precoacao,daystoexp):
-        self.prices=precoacao
-        self.value=bs.BlackScholes('c',precoacao,precoexercicio,daystoexp,Option.rate,Option.volatility)
+    def __init__(self, strikeprice, expirationdate):
+        super(Call, self).__init__(strikeprice, expirationdate, 'c')
 
 class Put(Option):
-    def __init__(self,precoexercicio,precoacao,daystoexp):
-        self.prices=precoacao
-        self.value=bs.BlackScholes('p',precoacao,precoexercicio,daystoexp,Option.rate,Option.volatility)
+    def __init__(self, strikeprice, expirationdate):
+        super(Put, self).__init__(strikeprice, expirationdate, 'p')
 
-def plotspread(exercicio1,exercicio2,daystoexp,min=12,max=20):
-    price=np.arange(min,max,0.005)
-    option1=Call(exercicio1,price,daystoexp)
-    option2=Call(exercicio2,price,daystoexp)
-    opt=option1-option2
-    pylab.plot(price,opt.value,'-',label='%s:%s:%s'%(exercicio1,exercicio2,daystoexp))
+Leg = collections.namedtuple('Leg', ('asset', 'quantity'))
 
-def t1():
-    price=np.arange(16,20,0.005)
-    ex=16
-    d=(datetime.date(2014,06,16)-datetime.date.today()).days
-    a=Put(16.66,price,d)
-    b=Call(19.16,price,d)
-    a.plot('-')
-    b.plot('-')
-    for x in [-1.5,-1,-0.5,0,0.5,1,1.5]:
-        a=Put(18.16-x,price,d)
-        b=Call(18.16+x,price,d)
-        c=a+b
-        c.value=c.value/min(c.value)
-        c.plot('-',label=str(x))
+class Balance(collections.defaultdict):
+    def __init__(self, *args, **kwargs):
+        super(Balance, self).__init__(lambda : 0, *args, **kwargs)
+        self.default_factory = lambda : 0
 
-def t2():
-    price=np.arange(16,20,0.005)
-    ex=18
-    d=(datetime.date(2014,06,16)-datetime.date.today()).days
-    for v in np.arange(0.01,0.03,0.005):
-        Option.volatility=v
-        #a=Put(16.66,price,d)
-        b=Call(19.16,price,d)
-        b.plot('-',label=str(v))
+    def append(self, legs, date):
+        date = _preparedate(date)
+        for leg in legs:
+            self[leg.asset] = round(self[leg.asset] + leg.quantity, 2)
+        self.date = date
 
-def t3():
-    price=np.arange(16,20,0.005)
-    for d in [10,30]:
-        for v in np.arange(0.02,0.0205,0.005):
-            Option.volatility=v
-            a=Call(16.66,price,d)
-            b=Call(18.66,price,d)
-            c=a-b
-            c.plot('-',label='c'+str(v)+str(d))
-            a.plot('-',label='a'+str(v)+str(d))
+    def snapshot(self):
+        result =  Balance(dict([(k,v) for k, v in self.iteritems() if v != 0]))
+        result.date = self.date
+        return result
 
-def t4():
-    price=np.arange(10,25,0.005)
-    for d in [0,30]:
-        for v in [0.02]:
-            Option.volatility=v
-            a=Call(16.66,price,d)
-            b=Put(16.66,price,d)
-            c=a+b
-            c.plot('-',label='c'+str(v)+str(d))
-            #a.plot('-',label='a'+str(v)+str(d))
-    c.plotDelta('-',label='delta c'+str(v)+str(d))
-    #a.plotDelta('-',label='delta a'+str(v)+str(d))
+    def plot(self, pricerange, **kwargs):
+        result = 0 * pricerange
+        for asset, quantity in self.iteritems():
+            result += quantity * asset.value(pricerange, self.date)
+        pylab.plot(pricerange, result, **kwargs)
 
-if __name__=="__main__":
-    t4()
-    ax = pylab.plt.gca()
-    #ax.set_xscale('log')
-    #ax.set_yscale('log')
-    pylab.grid(b=True, which='major', color='b', linestyle='-')
-    pylab.rcParams['legend.loc'] = 'best'
-    pylab.legend()
-    pylab.show()
+class History:
+    def __init__(self):
+        self.tradehistory = []
+        self.balance = Balance()
+        self.balancehistory = []
+
+    def _updatebalance(self, legs, date):
+        date = _preparedate(date)
+        self.tradehistory.append((legs, date))
+        self.balance.append(legs, date)
+        self.balancehistory.append(self.balance.snapshot())
+
+    def cash(self, quantity, date=None):
+        date = _preparedate(date)
+        self._updatebalance([Leg(Money, quantity)], date)
+
+    
+    @staticmethod
+    def commission(price, quantity):
+        result = 0
+        for percent in [0.04, 0.03, 0.07]:
+            result += np.trunc(percent * price * quantity)
+        result += np.trunc(7.5 * 105.0)
+        return float(result) / 100.0
+        
+    def trade(self, option, quantity, price=None, date=None, stockprice=None):
+        date = _preparedate(date)
+        if price == None:
+            price = option.value(stockprice, date)
+        commission = self.commission(price, quantity)
+        self._updatebalance([Leg(option, quantity), 
+                             Leg(Money, -round(price*quantity, 2)), 
+                             Leg(Money, -commission)], date)
+
+    def plotAll(self, pricerange):
+        for b in self.balancehistory:
+            b.plot(np.arange(17,25,0.05))
+        pylab.show()
