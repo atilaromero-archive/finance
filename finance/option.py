@@ -29,8 +29,11 @@ class Option(object):
         if daystoexp < 0:  
             return 0
             #daystoexp = 0 
-        result = bs.BlackScholes(self.optype,stockprice,self.strikeprice,daystoexp,rate,volatility)
+        result = bs.BlackScholes(self.optype,0.0+stockprice,self.strikeprice,daystoexp,rate,volatility)
         return result
+
+    def __repr__(self):
+        return '<{0}, {1}, {2}>'.format(self.__class__.__name__, self.expirationdate, self.strikeprice)
 
 class Call(Option):
     def __init__(self, strikeprice, expirationdate):
@@ -100,5 +103,5 @@ class History:
 
     def plotAll(self, pricerange):
         for b in self.balancehistory:
-            b.plot(np.arange(17,25,0.05))
+            b.plot(pricerange)
         pylab.show()
